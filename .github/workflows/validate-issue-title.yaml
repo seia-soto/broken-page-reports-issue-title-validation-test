@@ -27,7 +27,7 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
           VALERR: ${{ env.VALERR }}
         run: >
-          gh issue comment "${NUMBER}" --body "❌ The issue title is not in a valid format: ```${VALERR}```" && gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title'
+          gh issue comment "${NUMBER}" --body "❌ The issue title is not in a valid format: \`\`\`${VALERR}\`\`\`" && gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title'
       - if: ${{ env.VALERR == '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
