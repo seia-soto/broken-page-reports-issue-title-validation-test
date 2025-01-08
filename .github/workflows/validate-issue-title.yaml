@@ -1,0 +1,17 @@
+name: Validate issue title
+
+on:
+  issues:
+    types: [opened, edited]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - env:
+          name: ${{ github.event.inputs.NAME }}
+        run: deno run ./src/validate-issue-title.ts "${name}"

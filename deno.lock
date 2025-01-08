@@ -1,0 +1,22 @@
+{
+  "version": "4",
+  "specifiers": {
+    "npm:tldts@^6.1.71": "6.1.71"
+  },
+  "npm": {
+    "tldts-core@6.1.71": {
+      "integrity": "sha512-LRbChn2YRpic1KxY+ldL1pGXN/oVvKfCVufwfVzEQdFYNo39uF7AJa/WXdo+gYO7PTvdfkCPCed6Hkvz/kR7jg=="
+    },
+    "tldts@6.1.71": {
+      "integrity": "sha512-LQIHmHnuzfZgZWAf2HzL83TIIrD8NhhI0DVxqo9/FdOd4ilec+NTNZOlDZf7EwrTNoutccbsHjvWHYXLAtvxjw==",
+      "dependencies": [
+        "tldts-core"
+      ]
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:tldts@^6.1.71"
+    ]
+  }
+}

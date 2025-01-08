@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "tldts": "npm:tldts@^6.1.71"
+  }
+}
