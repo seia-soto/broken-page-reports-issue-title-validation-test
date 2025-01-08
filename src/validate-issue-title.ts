@@ -9,17 +9,20 @@ function addr(decimalNotation: string): number {
 const title = process.argv.slice(2)[0];
 
 if (/[A-Z]/.test(title)) {
-  throw new Error("❌ Given string includes an upper-case character!");
+  console.error("Given string includes an upper-case character!");
+  process.exit(1);
 }
 
 const parsed = parse(title);
 
 if (parsed.hostname === null) {
-  throw new Error("❌ Given string is not a valid domain name or IP address!");
+  console.error("Given string is not a valid domain name or IP address!");
+  process.exit(1);
 }
 
 if (parsed.hostname !== title) {
-  throw new Error("❌ Given string is not a pure hostname!");
+  console.error("Given string is not a pure hostname!");
+  process.exit(1);
 }
 
 if (parsed.isIp) {
@@ -31,8 +34,10 @@ if (parsed.isIp) {
     (ip >= addr("172.16.0.0") && ip <= addr("172.31.255.255")) ||
     (ip >= addr("192.168.0.0") && ip <= addr("192.168.255.255"))
   ) {
-    throw new Error("❌ Private IP address is not allowed!");
+    console.error("IP address is not in the public address space!");
+    process.exit(1);
   }
 } else if (!parsed.isIcann) {
-  throw new Error("❌ TLD is not registered to ICANN!");
+  console.error("TLD is not registered to ICANN list!");
+  process.exit(1);
 }
