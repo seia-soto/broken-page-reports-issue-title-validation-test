@@ -19,9 +19,9 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
         run: >
           echo "VALERR=$(deno run './src/validate-issue-title.ts' "${name}" 2>&1 >/dev/null)" >> $GITHUB_ENV
-      - if: ${{ "${env.VALERR}" != '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') != true }}
+      - if: ${{ env.VALERR != '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') != true }}
         run: >
           gh issue comment "${NUMBER}" --body "❌ This issue title is not in a valid format: ```${ERR}```" && gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title'
-      - if: ${{ "${env.VALERR}" == '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
+      - if: ${{ env.VALERR == '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
         run: >
           gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title'
