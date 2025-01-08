@@ -8,17 +8,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Validate
+    name: Validate issue title
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          NAME: ${{ github.event.inputs.NAME }}
+          NAME: ${{ github.event.issue.title }}
           NUMBER: ${{ github.event.issue.number }}
-          HAS_INVALID_TAG: ${{ contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
-        run: |
+        run: >
           ERR="$(deno run './src/validate-issue-title.ts' "${name}" 2>&1 >/dev/null)";
-          [[ "${ERR}" != '' && "${HAS_INVALID_TAG}" != true ]]; gh issue comment "${NUMBER}" --body "❌ This issue title is not in a valid format: ```${ERR}```" && gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title';
-          [[ "${ERR}" == '' && "${HAS_INVALID_TAG}" == true ]]; gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title';
+      - if: "${ERR}" != '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') != true
+        run: >
+          gh issue comment "${NUMBER}" --body "❌ This issue title is not in a valid format: ```${ERR}```" && gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title'
+      - if: "${ERR}" == '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true
+        run: >
+          gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title'
