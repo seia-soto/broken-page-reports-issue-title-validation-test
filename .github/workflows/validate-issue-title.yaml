@@ -19,11 +19,6 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
           HAS_INVALID_TAG: ${{ contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
         run: >
-          ERR = "$(deno run './src/validate-issue-title.ts' "${name}" 2>&1 >/dev/null)";
-          if [ "${ERR}" != "" ];
-            if [ "${HAS_INVALID_TAG}" != true ];
-              gh issue comment "${NUMBER}" --body "❌ This issue title is not in a valid format: ```${ERR}```";
-            fi
-          else
-            if [ "${HAS_INVALID_TAG}" == true ]; gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title'
-          fi
+          ERR="$(deno run './src/validate-issue-title.ts' "${name}" 2>&1 >/dev/null)";
+          [[ "${ERR}" != '' && "${HAS_INVALID_TAG}" != true ]]; gh issue comment "${NUMBER}" --body "❌ This issue title is not in a valid format: ```${ERR}```";
+          [[ "${ERR}" == '' && "${HAS_INVALID_TAG}" == true ]]; gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title'
