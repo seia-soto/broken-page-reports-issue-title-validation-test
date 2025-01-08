@@ -12,8 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
-      - if: contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title')
-        env:
+      - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           NAME: ${{ github.event.inputs.name }}
