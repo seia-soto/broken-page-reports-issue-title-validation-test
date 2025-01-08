@@ -13,10 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
       - env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
           NAME: ${{ github.event.issue.title }}
-          NUMBER: ${{ github.event.issue.number }}
         run: |
           {
             echo 'VALERR<<EOF'
@@ -24,8 +21,17 @@ jobs:
             echo EOF
           } >> "$GITHUB_ENV"
       - if: ${{ env.VALERR != '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') != true }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          VALERR: ${{ env.VALERR }}
         run: >
-          gh issue comment "${NUMBER}" --body "❌ This issue title is not in a valid format: ```${ERR}```" && gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title'
+          gh issue comment "${NUMBER}" --body "❌ The issue title is not in a valid format: ```${VALERR}```" && gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title'
       - if: ${{ env.VALERR == '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
         run: >
           gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title'
