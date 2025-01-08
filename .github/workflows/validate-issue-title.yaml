@@ -21,4 +21,4 @@ jobs:
         run: |
           ERR="$(deno run './src/validate-issue-title.ts' "${name}" 2>&1 >/dev/null)";
           [[ "${ERR}" != '' && "${HAS_INVALID_TAG}" != true ]]; gh issue comment "${NUMBER}" --body "❌ This issue title is not in a valid format: ```${ERR}```";
-          [[ "${ERR}" == '' && "${HAS_INVALID_TAG}" == true ]]; gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title'
+          [[ "${ERR}" == '' && "${HAS_INVALID_TAG}" == true ]]; gh issue edit "${NUMBER}" --remove-label 'checks/invalid-issue-title';
