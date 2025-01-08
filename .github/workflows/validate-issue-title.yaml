@@ -6,9 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  validate-and-label:
     runs-on: ubuntu-latest
     name: Validate issue title
+    permissions:
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
