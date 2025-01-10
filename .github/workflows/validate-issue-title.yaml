@@ -14,16 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
-      - env:
+      - run: deno install
+      - name: Validate issue title
+        env:
           NAME: ${{ github.event.issue.title }}
         run: |
-          deno install
           {
             echo 'VALERR<<EOF'
             echo "$(deno run './src/validate-issue-title.ts' "${name}" 2>&1 >/dev/null)"
             echo EOF
           } >> "$GITHUB_ENV"
-      - if: ${{ env.VALERR != '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') != true }}
+      - name: In case of an invalid issue title, comment about the error and label the issue
+        if: ${{ env.VALERR != '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') != true }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
@@ -31,14 +33,15 @@ jobs:
           VALERR: ${{ env.VALERR }}
         run: |
           gh issue comment "${NUMBER}" --body "$(cat <<EOF
-          ❌ The issue title is not in a valid format:
+          ❌ The issue title is not properly formatted:
           \`\`\`
-          ${VALERR}]
+          ${VALERR}
           \`\`\`
           EOF
           )"
           gh issue edit "${NUMBER}" --add-label 'checks/invalid-issue-title'
-      - if: ${{ env.VALERR == '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
+      - name: In case of a valid issue title with an invalid label, remove the label from the issue
+        if: ${{ env.VALERR == '' && contains(github.event.issue.labels.*.name, 'checks/invalid-issue-title') == true }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
